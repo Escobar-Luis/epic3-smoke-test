@@ -1,0 +1,11 @@
+{
+  "sha": "97463bf157a44c0d5e99ae806c2e340388014e4c",
+  "recorded_at": "2026-10-20T05:05:56.640Z",
+  "fresh_input_tokens": 8,
+  "output_tokens": 545,
+  "cache_read_tokens": 85906,
+  "cache_creation_tokens": 15956,
+  "num_turns": 5,
+  "total_cost_usd": 0.07801910000000001,
+  "duration_ms": 9773
+}
