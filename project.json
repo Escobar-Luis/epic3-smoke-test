@@ -1,11 +1,11 @@
 {
   "startup": {
-    "name": "Example Startup",
-    "domain": "example.com"
+    "name": "Epic 3 Smoke Test",
+    "domain": "smoke-test.invalid"
   },
-  "title": "Example Project",
-  "repo": "https://github.com/Escobar-Luis/startup-project-template",
-  "problem": "One sentence naming who hurts and what this Project shows about fixing it. The build agent replaces this.",
+  "title": "Changelog summarizer (smoke test)",
+  "repo": "https://github.com/Escobar-Luis/epic3-smoke-test",
+  "problem": "Paste a changelog, get a three-bullet customer summary.",
   "colors": {
     "primary": "#1d4ed8",
     "accent": "#d97706",
