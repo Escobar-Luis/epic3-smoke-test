@@ -1,0 +1,16 @@
+{
+  "startup": {
+    "name": "Epic 3 Smoke Test",
+    "domain": "smoke-test.invalid"
+  },
+  "title": "Changelog summarizer (smoke test)",
+  "repo": "https://github.com/Escobar-Luis/epic3-smoke-test",
+  "problem": "Paste a changelog, get a three-bullet customer summary.",
+  "colors": {
+    "primary": "#1d4ed8",
+    "accent": "#d97706",
+    "background": "#f8fafc",
+    "text": "#0f172a"
+  },
+  "examples_title": "Try a recorded example"
+}

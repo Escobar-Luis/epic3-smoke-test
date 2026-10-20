@@ -1,0 +1,20 @@
+[
+  {
+    "input": "v2.4.0\n- Added CSV export to the reports page\n- Fixed timezone offset bug in scheduled emails\n- Upgraded internal queue library to 5.2\n- Dark mode now follows the system setting\n- Removed the deprecated /v1/legacy-sync endpoint",
+    "output": "- You can now download your reports as CSV files straight from the reports page.\n- Scheduled emails now arrive at the right local time, and dark mode follows your device setting.\n- The old legacy sync option has been removed, so switch to the current sync if you still used it.",
+    "model": "claude-sonnet-5-5",
+    "recorded_at": "2026-10-20T00:00:00Z"
+  },
+  {
+    "input": "## 1.12.3\n* Patch: login redirect loop on Safari 17\n* Patch: avatar upload fails for files over 5MB\n* Perf: dashboard loads 40% faster\n* Chore: bump eslint, update CI cache keys",
+    "output": "- Logging in on Safari no longer sends you in circles.\n- Uploading a profile picture over 5MB now works.\n- Your dashboard opens noticeably faster.",
+    "model": "claude-sonnet-5-5",
+    "recorded_at": "2026-10-20T00:00:00Z"
+  },
+  {
+    "input": "3.0.0 - Redesigned navigation with a left sidebar. Team workspaces replace personal folders. Old share links keep working for 90 days. API tokens now expire after 1 year. Added SSO via SAML for Business plans.",
+    "output": "- Meet the new look: navigation now lives in a left sidebar, and team workspaces replace personal folders.\n- Your existing share links keep working for 90 days, so you have time to update them.\n- Business plans can now sign in with SAML single sign-on, and API tokens expire after one year.",
+    "model": "claude-sonnet-5-5",
+    "recorded_at": "2026-10-20T00:00:00Z"
+  }
+]
