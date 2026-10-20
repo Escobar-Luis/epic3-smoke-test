@@ -138,13 +138,10 @@ describe("gate CLIs", () => {
     expect(r.stderr).toContain("leaks server-only strings");
   });
 
-  it("check-placeholders: the template fails, a filled-in Project passes", () => {
+  it("check-placeholders: this filled-in Project passes, a bare one is refused", () => {
     const r = node("check-placeholders.mjs", [], ROOT);
-    expect(r.status).toBe(1);
-    expect(r.stderr).toContain('"Example Startup"');
-    expect(r.stderr).toContain("at least 3 recorded runs");
-    expect(r.stderr).toContain("template-placeholder");
-    expect(r.stderr).toContain("Replace with");
+    expect(r.stderr).toBe("");
+    expect(r.status).toBe(0);
 
     const dir = tmp("placeholders");
     mkdirSync(join(dir, "demo"));

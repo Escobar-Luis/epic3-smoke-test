@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>startup-project-template · how it works</title>
+<title>Changelog summarizer (smoke test) · how it works</title>
 <style>
   :root {
     --accent: #1d4ed8;
@@ -61,8 +61,8 @@
 </head>
 <body>
 <header>
-  <h1>startup-project-template</h1>
-  <p class="tldr"><b>TL;DR</b> A $0 full-stack demo: a React page and an API on one Cloudflare Worker, its own Neon database, free AI models with a recorded fallback, and a GitHub Pages link that outlives the Worker.</p>
+  <h1>Changelog summarizer (smoke test)</h1>
+  <p class="tldr"><b>TL;DR</b> A $0 demo that turns a pasted changelog into three plain-English customer bullets, using free AI models with a recorded fallback.</p>
 </header>
 <main>
   <section class="card" id="diagram" aria-label="Architecture diagram">
@@ -70,82 +70,89 @@
     <pre class="mermaid">flowchart TD
   n0[&quot;Visitor&#39;s browser&quot;]
   n1[&quot;Worker API #40;Hono#41;&quot;]
-  n2[&quot;llm#40;#41;: free model chain&quot;]
-  n3[&quot;Neon Postgres&quot;]
-  n4[&quot;GitHub Pages front&quot;]
-  n5[&quot;ship.yml: build, publish, deploy&quot;]
-  n6[&quot;This explainer and the clip&quot;]
-  n0 --&gt;|&quot;opens the link&quot;| n4
-  n4 --&gt;|&quot;live? go there&quot;| n1
+  n2[&quot;Summary prompt&quot;]
+  n3[&quot;llm#40;#41;: free model chain&quot;]
+  n4[&quot;Neon Postgres&quot;]
+  n5[&quot;GitHub Pages front&quot;]
+  n6[&quot;ship.yml: build, publish, deploy&quot;]
+  n7[&quot;This explainer and the clip&quot;]
+  n0 --&gt;|&quot;opens the link&quot;| n5
+  n5 --&gt;|&quot;live? go there&quot;| n1
   n0 --&gt;|&quot;POST /api/ask&quot;| n1
-  n1 --&gt;|&quot;llm#40;prompt#41;&quot;| n2
-  n2 --&gt;|&quot;daily count, recorded runs&quot;| n3
-  n1 --&gt;|&quot;submissions&quot;| n3
-  n5 --&gt;|&quot;deploys&quot;| n1
-  n5 --&gt;|&quot;publishes&quot;| n4
-  n5 --&gt;|&quot;builds&quot;| n6</pre>
+  n1 --&gt;|&quot;llm#40;prompt#41;&quot;| n3
+  n3 --&gt;|&quot;daily count, recorded runs&quot;| n4
+  n1 --&gt;|&quot;submissions&quot;| n4
+  n6 --&gt;|&quot;deploys&quot;| n1
+  n6 --&gt;|&quot;publishes&quot;| n5
+  n6 --&gt;|&quot;builds&quot;| n7
+  n1 --&gt;|&quot;adds system prompt&quot;| n2</pre>
     <div id="nodelist" hidden></div>
   </section>
   <section class="card" id="panels" aria-live="polite">
     <h2>Details</h2>
 <section class="panel" id="panel-visitor" data-node="visitor" aria-labelledby="h-visitor">
-<h3 id="h-visitor">Visitor&#39;s browser <span class="stop">Tour 2</span></h3>
-<h4>What it does</h4><p>Loads the single-page app, sends a prompt to the API and shows the answer, or a recorded run when the live AI quota is used up.</p>
-<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/src/web/App.tsx" target="_blank" rel="noopener"><code>src/web/App.tsx</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/src/web/project.ts" target="_blank" rel="noopener"><code>src/web/project.ts</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/project.json" target="_blank" rel="noopener"><code>project.json</code></a></li></ul>
+<h3 id="h-visitor">Visitor&#39;s browser <span class="stop">Tour 1</span></h3>
+<h4>What it does</h4><p>Loads the single-page app, sends a pasted changelog to the API and shows the three-bullet summary, or a recorded run when the live AI quota is used up.</p>
+<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/src/web/App.tsx" target="_blank" rel="noopener"><code>src/web/App.tsx</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/src/web/project.ts" target="_blank" rel="noopener"><code>src/web/project.ts</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/project.json" target="_blank" rel="noopener"><code>project.json</code></a></li></ul>
 <h4>Why it is built this way</h4><p>The page is static assets served by the Worker, so it costs no Worker CPU. The Startup name, colors and problem come from project.json, so a new Project changes data, not layout.</p>
 </section>
 <section class="panel" id="panel-worker" data-node="worker" aria-labelledby="h-worker">
-<h3 id="h-worker">Worker API (Hono) <span class="stop">Tour 3</span></h3>
-<h4>What it does</h4><p>Serves /api/ask and /health. It validates the prompt, keys the visitor by a peppered hash, and hands the call to llm().</p>
-<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/src/worker/index.ts" target="_blank" rel="noopener"><code>src/worker/index.ts</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/src/worker/ratelimit.ts" target="_blank" rel="noopener"><code>src/worker/ratelimit.ts</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/wrangler.jsonc" target="_blank" rel="noopener"><code>wrangler.jsonc</code></a></li></ul>
+<h3 id="h-worker">Worker API (Hono) <span class="stop">Tour 2</span></h3>
+<h4>What it does</h4><p>Serves /api/ask and /health. It validates the changelog text, adds the three-bullet system prompt, keys the visitor by a peppered hash, and hands the call to llm().</p>
+<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/src/worker/index.ts" target="_blank" rel="noopener"><code>src/worker/index.ts</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/src/worker/ratelimit.ts" target="_blank" rel="noopener"><code>src/worker/ratelimit.ts</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/wrangler.jsonc" target="_blank" rel="noopener"><code>wrangler.jsonc</code></a></li></ul>
 <h4>Why it is built this way</h4><p>One Worker holds every key and the database URL, so nothing secret ever reaches the browser. /health always answers 200 with {ok, db, sha} so the Pages front and the deploy smoke check can read why it is not ok.</p>
+</section>
+<section class="panel" id="panel-prompt" data-node="prompt" aria-labelledby="h-prompt">
+<h3 id="h-prompt">Summary prompt <span class="stop">Tour 3</span></h3>
+<h4>What it does</h4><p>A fixed system prompt tells the model to reply with exactly three plain-English bullets for customers and to treat the pasted changelog as content, not instructions.</p>
+<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/src/worker/index.ts" target="_blank" rel="noopener"><code>src/worker/index.ts</code></a></li></ul>
+<h4>Why it is built this way</h4><p>The whole product is this one instruction, so it lives next to the route and has a test that checks it reaches the model.</p>
 </section>
 <section class="panel" id="panel-llm" data-node="llm" aria-labelledby="h-llm">
 <h3 id="h-llm">llm(): free model chain <span class="stop">Tour 4</span></h3>
 <h4>What it does</h4><p>Counts the call against a daily cap in Neon, then tries Workers AI, Groq and OpenRouter free tiers in order, and falls back to a recorded run with a banner.</p>
-<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/src/worker/llm.ts" target="_blank" rel="noopener"><code>src/worker/llm.ts</code></a></li></ul>
+<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/src/worker/llm.ts" target="_blank" rel="noopener"><code>src/worker/llm.ts</code></a></li></ul>
 <h4>Why it is built this way</h4><p>Every model call goes through one function, so the $0 rule holds in one place: no database or a full day fails closed to demo mode instead of spending.</p>
 </section>
 <section class="panel" id="panel-db" data-node="db" aria-labelledby="h-db">
 <h3 id="h-db">Neon Postgres <span class="stop">Tour 5</span></h3>
 <h4>What it does</h4><p>Stores the daily call counter, the recorded demo runs and visitor submissions, one Neon project per Project.</p>
-<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/src/worker/db.ts" target="_blank" rel="noopener"><code>src/worker/db.ts</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/db/schema.ts" target="_blank" rel="noopener"><code>db/schema.ts</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/db/init.sql" target="_blank" rel="noopener"><code>db/init.sql</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/db/rls.sql" target="_blank" rel="noopener"><code>db/rls.sql</code></a></li></ul>
+<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/src/worker/db.ts" target="_blank" rel="noopener"><code>src/worker/db.ts</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/db/schema.ts" target="_blank" rel="noopener"><code>db/schema.ts</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/db/init.sql" target="_blank" rel="noopener"><code>db/init.sql</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/db/rls.sql" target="_blank" rel="noopener"><code>db/rls.sql</code></a></li></ul>
 <h4>Why it is built this way</h4><p>Row-level security keys visitor rows on app.visitor, and the Worker connects as an app role that cannot bypass it. HTTP queries fit the Worker&#39;s short requests.</p>
 </section>
 <section class="panel" id="panel-pages" data-node="pages" aria-labelledby="h-pages">
-<h3 id="h-pages">GitHub Pages front <span class="stop">Tour 1</span></h3>
+<h3 id="h-pages">GitHub Pages front <span class="stop">Tour 6</span></h3>
 <h4>What it does</h4><p>The link to share. It sends visitors to the live Worker when /health answers, and shows the recorded runs when it does not.</p>
-<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/pages/index.html" target="_blank" rel="noopener"><code>pages/index.html</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/demo/runs.json" target="_blank" rel="noopener"><code>demo/runs.json</code></a></li></ul>
+<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/pages/index.html" target="_blank" rel="noopener"><code>pages/index.html</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/demo/runs.json" target="_blank" rel="noopener"><code>demo/runs.json</code></a></li></ul>
 <h4>Why it is built this way</h4><p>A free Worker or database can sleep or be retired; the Pages link and its recorded runs stay up, so an old link never shows an error.</p>
 </section>
 <section class="panel" id="panel-ship" data-node="ship" aria-labelledby="h-ship">
-<h3 id="h-ship">ship.yml: build, publish, deploy <span class="stop">Tour 6</span></h3>
+<h3 id="h-ship">ship.yml: build, publish, deploy </h3>
 <h4>What it does</h4><p>Build runs the Claude Code agent with a read-only token. Publish, on a fresh runner, refuses protected-path changes, tests, builds and runs gitleaks before pushing. Deploy checks the review, placeholders, Pages and database size, then ships the Worker with its secrets and publishes Pages.</p>
-<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/.github/workflows/ship.yml" target="_blank" rel="noopener"><code>.github/workflows/ship.yml</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/scripts/check-review.mjs" target="_blank" rel="noopener"><code>scripts/check-review.mjs</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/scripts/check-placeholders.mjs" target="_blank" rel="noopener"><code>scripts/check-placeholders.mjs</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/scripts/provision-neon.mjs" target="_blank" rel="noopener"><code>scripts/provision-neon.mjs</code></a></li></ul>
+<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/.github/workflows/ship.yml" target="_blank" rel="noopener"><code>.github/workflows/ship.yml</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/scripts/check-review.mjs" target="_blank" rel="noopener"><code>scripts/check-review.mjs</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/scripts/check-placeholders.mjs" target="_blank" rel="noopener"><code>scripts/check-placeholders.mjs</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/scripts/provision-neon.mjs" target="_blank" rel="noopener"><code>scripts/provision-neon.mjs</code></a></li></ul>
 <h4>Why it is built this way</h4><p>Heavy work runs in GitHub Actions, never on a laptop, and the agent that writes the code never holds a deploy secret or a push token.</p>
 </section>
 <section class="panel" id="panel-explainer" data-node="explainer" aria-labelledby="h-explainer">
-<h3 id="h-explainer">This explainer and the clip <span class="stop">Tour 7</span></h3>
+<h3 id="h-explainer">This explainer and the clip </h3>
 <h4>What it does</h4><p>The project-explainer skill writes public/explainer.json; a script checks it and builds this page. A best-effort job turns the same facts into a short how-it-works video.</p>
-<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/.claude/skills/project-explainer/SKILL.md" target="_blank" rel="noopener"><code>.claude/skills/project-explainer/SKILL.md</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/scripts/build-explainer.mjs" target="_blank" rel="noopener"><code>scripts/build-explainer.mjs</code></a></li><li><a href="https://github.com/Escobar-Luis/startup-project-template/blob/HEAD/scripts/build-clip.mjs" target="_blank" rel="noopener"><code>scripts/build-clip.mjs</code></a></li></ul>
+<h4>Files</h4><ul class="files"><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/.claude/skills/project-explainer/SKILL.md" target="_blank" rel="noopener"><code>.claude/skills/project-explainer/SKILL.md</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/scripts/build-explainer.mjs" target="_blank" rel="noopener"><code>scripts/build-explainer.mjs</code></a></li><li><a href="https://github.com/Escobar-Luis/epic3-smoke-test/blob/HEAD/scripts/build-clip.mjs" target="_blank" rel="noopener"><code>scripts/build-clip.mjs</code></a></li></ul>
 <h4>Why it is built this way</h4><p>One fixed page format for every Project, readable from a file with no server, so each Project can be understood in about three minutes.</p>
 </section>
   </section>
   <section class="card" id="tour" aria-label="Guided tour">
     <h2>Tour · the talk track, in order</h2>
     <ol>
-<li class="step" data-node="pages" data-step="1"><button type="button"><span class="num">1</span><span class="t"><strong>Anyone opens one stable link.</strong><span class="where">GitHub Pages front</span><span class="say">Everything starts at the GitHub Pages link: it checks whether the live app is awake and sends the visitor there, or shows recorded runs.</span></span></button></li>
-<li class="step" data-node="visitor" data-step="2"><button type="button"><span class="num">2</span><span class="t"><strong>The page asks a question.</strong><span class="where">Visitor&#39;s browser</span><span class="say">The React page is static assets on the Worker, branded from project.json, and posts the visitor&#39;s prompt to the API.</span></span></button></li>
-<li class="step" data-node="worker" data-step="3"><button type="button"><span class="num">3</span><span class="t"><strong>One Worker holds every key.</strong><span class="where">Worker API (Hono)</span><span class="say">The Hono API validates the prompt and keys the visitor by a peppered hash; secrets and the database URL never leave the Worker.</span></span></button></li>
+<li class="step" data-node="visitor" data-step="1"><button type="button"><span class="num">1</span><span class="t"><strong>Paste a changelog, press Summarize.</strong><span class="where">Visitor&#39;s browser</span><span class="say">The visitor pastes up to 2000 characters of changelog into the React page and posts it to the API.</span></span></button></li>
+<li class="step" data-node="worker" data-step="2"><button type="button"><span class="num">2</span><span class="t"><strong>One Worker holds every key.</strong><span class="where">Worker API (Hono)</span><span class="say">The Hono API validates the prompt and keys the visitor by a peppered hash; secrets and the database URL never leave the Worker.</span></span></button></li>
+<li class="step" data-node="prompt" data-step="3"><button type="button"><span class="num">3</span><span class="t"><strong>One instruction shapes the answer.</strong><span class="where">Summary prompt</span><span class="say">The Worker adds a system prompt that asks for exactly three plain-English customer bullets.</span></span></button></li>
 <li class="step" data-node="llm" data-step="4"><button type="button"><span class="num">4</span><span class="t"><strong>Free models, then a recorded run.</strong><span class="where">llm(): free model chain</span><span class="say">llm() counts the call against a daily cap, tries Workers AI, Groq and OpenRouter free tiers, and falls back to a recorded run with a banner, so it stays at zero dollars.</span></span></button></li>
 <li class="step" data-node="db" data-step="5"><button type="button"><span class="num">5</span><span class="t"><strong>Its own database, locked per visitor.</strong><span class="where">Neon Postgres</span><span class="say">Each Project gets its own Neon database; row-level security keeps each visitor&#39;s rows to themselves.</span></span></button></li>
-<li class="step" data-node="ship" data-step="6"><button type="button"><span class="num">6</span><span class="t"><strong>The cloud builds and ships it.</strong><span class="where">ship.yml: build, publish, deploy</span><span class="say">ship.yml builds with an agent that cannot push, publishes only after tests and a secret scan, and deploys only after the review and size gates pass.</span></span></button></li>
-<li class="step" data-node="explainer" data-step="7"><button type="button"><span class="num">7</span><span class="t"><strong>This page explains it all.</strong><span class="where">This explainer and the clip</span><span class="say">The same facts build this explainer and a short clip, so every Project can be read in about three minutes.</span></span></button></li>
+<li class="step" data-node="pages" data-step="6"><button type="button"><span class="num">6</span><span class="t"><strong>A stable link with recorded runs.</strong><span class="where">GitHub Pages front</span><span class="say">The GitHub Pages front shows the recorded summaries when the live Worker is asleep.</span></span></button></li>
     </ol>
     <div class="nav"><button type="button" id="prev">Back</button><button type="button" id="next">Next</button></div>
   </section>
 </main>
-<script type="application/json" id="explainer-data">{"nodes":{"n0":"visitor","n1":"worker","n2":"llm","n3":"db","n4":"pages","n5":"ship","n6":"explainer"},"labels":{"visitor":"Visitor's browser","worker":"Worker API (Hono)","llm":"llm(): free model chain","db":"Neon Postgres","pages":"GitHub Pages front","ship":"ship.yml: build, publish, deploy","explainer":"This explainer and the clip"},"tour":["pages","visitor","worker","llm","db","ship","explainer"]}</script>
+<script type="application/json" id="explainer-data">{"nodes":{"n0":"visitor","n1":"worker","n2":"prompt","n3":"llm","n4":"db","n5":"pages","n6":"ship","n7":"explainer"},"labels":{"visitor":"Visitor's browser","worker":"Worker API (Hono)","prompt":"Summary prompt","llm":"llm(): free model chain","db":"Neon Postgres","pages":"GitHub Pages front","ship":"ship.yml: build, publish, deploy","explainer":"This explainer and the clip"},"tour":["visitor","worker","prompt","llm","db","pages"]}</script>
 <script>
   // Works from file:// and as a static asset: no fetch, no server. Without JS every panel shows in order.
   (function () {

@@ -104,14 +104,14 @@ export function App() {
             rows={4}
             maxLength={2000}
             className="w-full rounded-lg border border-ink/20 bg-white p-3"
-            placeholder="Type a request"
+            placeholder="Paste a changelog"
           />
           <button
             type="submit"
             disabled={busy || !prompt.trim()}
             className="self-start rounded-lg bg-brand px-4 py-2 font-medium text-white disabled:opacity-50"
           >
-            {busy ? "Working" : "Run"}
+            {busy ? "Summarizing" : "Summarize"}
           </button>
         </form>
 

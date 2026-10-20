@@ -5,26 +5,21 @@ The template every Project starts from: a live, $0, full-stack demo with its own
 
 ## Problem
 
-Replace with the Startup's problem: who hurts, and how much, in two or three sentences.
+Release notes are written for engineers. A customer who wants to know what changed has to read a raw changelog. This Project turns a pasted changelog into three plain-English bullets. It is a smoke test of the template, not a real company ("Epic 3 Smoke Test").
 
 ## Evidence
 
-Replace with the evidence for the problem, each item with its source link and date.
+- https://github.com/Escobar-Luis/startup-project-template: the template and stack this smoke test exercises (the only source in `brief/`).
 
 ## What was built
 
-The template ships:
+1. A page where a visitor pastes a changelog (max 2000 characters) and gets a three-bullet customer summary.
+2. `POST /api/ask` sends the text through `llm()` with a fixed system prompt (`SUMMARY_SYSTEM` in `src/worker/index.ts`): Workers AI, then Groq, then OpenRouter, then a recorded run with a banner.
+3. Each submission is stored in the `submissions` table under row-level security.
+4. Three recorded runs in `demo/runs.json`, written by `claude-sonnet-5-5` on made-up changelogs. The live free models were not run during the build, and their output quality is untested.
+5. An architecture explainer at `/explainer.html`, and the GitHub Pages front from the template.
 
-1. A Vite + React + Tailwind single-page app served as Workers static assets, reading `project.json` for the Startup name, colors and problem.
-2. A Hono API on the same Worker under `/api/*`, plus `/health` (`{ok, db, sha}`, always 200).
-3. `llm()` (`src/worker/llm.ts`): per-visitor rate limit, a daily counter in Neon, then Workers AI, Groq and OpenRouter free tiers, then demo mode with the banner "Live AI quota reached, showing a recorded run".
-4. Neon Postgres per Project through drizzle over HTTP, with row-level security on visitor input (`db/rls.sql`).
-5. `.github/workflows/ship.yml`: a `build` job (Claude Code action with a read-only token), a `publish` job on a fresh runner (protected-path check, rebase on main, tests, build, gitleaks, push) and a `deploy` job (review, placeholder, Pages and size gates, Neon provisioning, wrangler deploy with its secrets in the same version, `/health` smoke check needing `db:true`, `deployed.json`, GitHub Pages).
-6. An architecture explainer, `public/explainer.html`: one self-contained page (a clickable Mermaid diagram, a panel per part with its files and why, and a numbered tour in talk-track order) built by `scripts/build-explainer.mjs` from `public/explainer.json`, which the `project-explainer` skill (`.claude/skills/project-explainer/`) writes. It opens from a file, as a Worker static asset and on Pages.
-7. A best-effort `render-clip` job that renders a ~30 s captioned how-it-works clip from the same data with HyperFrames on the runner; deploy ships it as `how-it-works.mp4` when it rendered, and a failed render never fails the deploy.
-8. A GitHub Pages front (`pages/index.html`) that sends visitors to the live Worker when it answers and shows the recorded runs when it does not. It is the link to share; it outlives the Worker.
-
-The footer reads "independent demo by Luis Escobar, not affiliated with <company>".
+The footer reads "independent demo by Luis Escobar, not affiliated with Epic 3 Smoke Test".
 
 ## How to run
 

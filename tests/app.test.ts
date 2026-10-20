@@ -127,3 +127,24 @@ describe("routes", () => {
     expect(res.status).toBe(404);
   });
 });
+
+describe("changelog summarizer", () => {
+  it("sends the three-bullet system prompt with the pasted changelog", async () => {
+    const { SUMMARY_SYSTEM } = await import("../src/worker/index");
+    const seen: (string | undefined)[] = [];
+    const provider = {
+      name: "workers-ai" as const,
+      model: "m",
+      available: true,
+      generate: async (_p: string, system?: string) => {
+        seen.push(system);
+        return "- a\n- b\n- c";
+      },
+    };
+    const app = createApp({ store: () => fakeStore(), providers: () => [provider] });
+    const res = await post(app, env({ VISITOR_LIMIT: allowAll }), { prompt: "v1.0 added dark mode" });
+    expect(res.status).toBe(200);
+    expect(seen).toEqual([SUMMARY_SYSTEM]);
+    expect(SUMMARY_SYSTEM).toContain("three bullets");
+  });
+});
